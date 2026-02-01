@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
-import { AUTH_TOKEN_KEY } from './constants';
+import { AUTH_TOKEN_KEY } from '../constants';
 
 // Pages
 import LoginPage from './pages/Login';

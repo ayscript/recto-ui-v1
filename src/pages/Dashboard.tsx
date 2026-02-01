@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { api } from '../services/api';
+import { api } from '../../services/api';
 
 const DashboardPage: React.FC = () => {
   const [profile, setProfile] = useState<any>(null);
