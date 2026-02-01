@@ -21,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ onLogout }) => {
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
       {/* Sidebar */}
-      <aside className="hidden md:flex md:flex-shrink-0">
+      <aside className="hidden md:flex md:shrink-0">
         <div className="flex flex-col w-64 bg-slate-900 text-white">
           <div className="flex items-center h-16 px-6 bg-slate-950">
             <span className="text-2xl font-bold tracking-tighter text-indigo-400">RECTO</span>
@@ -46,7 +46,7 @@ const Layout: React.FC<LayoutProps> = ({ onLogout }) => {
               ))}
             </nav>
           </div>
-          <div className="flex flex-shrink-0 p-4 border-t border-slate-800">
+          <div className="flex shrink-0 p-4 border-t border-slate-800">
             <button
               onClick={onLogout}
               className="flex items-center w-full px-4 py-3 text-sm font-medium text-slate-400 rounded-xl hover:bg-red-500/10 hover:text-red-400 transition-colors"
