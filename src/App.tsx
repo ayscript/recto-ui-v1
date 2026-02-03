@@ -15,6 +15,7 @@ import ProfilePage from './pages/Profile';
 
 // Layout
 import Layout from './components/Layout';
+import RectoLandingPage from './pages/Landingpage';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem(AUTH_TOKEN_KEY));
@@ -34,11 +35,12 @@ const App: React.FC = () => {
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={!isAuthenticated ? <LoginPage onLogin={login} /> : <Navigate to="/" />} />
-        <Route path="/signup" element={!isAuthenticated ? <SignupPage /> : <Navigate to="/" />} />
+        <Route path="/signup" element={!isAuthenticated ? <SignupPage /> : <Navigate to="/dashboard" />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/" element={<RectoLandingPage />} />
 
         {/* Protected Routes */}
-        <Route path="/" element={isAuthenticated ? <Layout onLogout={logout} /> : <Navigate to="/login" />}>
+        <Route path="/dashboard" element={isAuthenticated ? <Layout onLogout={logout} /> : <Navigate to="/login" />}>
           <Route index element={<DashboardPage />} />
           <Route path="workspace" element={<WorkspacePage />} />
           <Route path="workspace/:id" element={<WorkspacePage />} />
