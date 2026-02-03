@@ -1,54 +1,46 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { api } from "../../services/api";
 import DesignCanvas from "../components/DesignCanvas";
 import DesignCanvass from "../components/HTMLDesign";
+import CanvasDownloader from "../components/DownloadButton";
 
 const WorkspacePage: React.FC = () => {
   const { id } = useParams();
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [designCode, setDesignCode] = useState<string | null>(null);
-  // const [customTexts, setCustomTexts] = useState<Record<string, string>>({
-  //   title: "MODERN EVENT",
-  //   subtitle: "AI GENERATED DESIGN",
-  //   date: "OCTOBER 24, 2024",
-  // });
-  // const [customColors, setCustomColors] = useState<Record<string, string>>({
-  //   bg: "#1e293b",
-  //   text: "#ffffff",
-  //   accent: "#f59e0b",
-  // });
-  // const [fontSize, setFontSize] = useState(48);
+  
+
+  const iframeRef = useRef(null);
+
+  const navigate = useNavigate();
 
   const handleGenerate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!prompt.trim()) return;
 
     setIsGenerating(true);
+
+    const session_id = id || String(Date.now());
+
+    if (!id) {
+      navigate(`/dashboard/workspace/${session_id}`);
+    }
+
     try {
       const responseData = await api.post("chat", {
-        session_id: id || String(new Date().getMilliseconds()),
+        session_id,
         message: prompt,
       });
+
       setDesignCode(JSON.parse(responseData?.response).canvas);
-      console.log(JSON.parse(responseData?.response).canvas)
+      console.log(JSON.parse(responseData?.response).canvas);
     } catch (error) {
       console.error("Generation failed", error);
     } finally {
       setIsGenerating(false);
     }
-  };
-
-  const downloadImage = (format: "png" | "jpeg" | "webp") => {
-    const canvas = document.querySelector("canvas");
-    if (!canvas) return;
-
-    const url = canvas.toDataURL(`image/${format}`);
-    const link = document.createElement("a");
-    link.download = `recto-design-${Date.now()}.${format === "jpeg" ? "jpg" : format}`;
-    link.href = url;
-    link.click();
   };
 
   return (
@@ -226,8 +218,9 @@ const WorkspacePage: React.FC = () => {
                 fontSize,
               }}
             /> */}
-
-            <DesignCanvass htmlStringFromApi={designCode} />
+            <CanvasDownloader iframeRef={iframeRef} />
+            
+            <DesignCanvass ref={iframeRef} htmlStringFromApi={designCode} />
 
             {/* <div className="mt-8 text-center text-slate-500 text-sm">
               <p>W: 600px | H: 800px | AI Assisted Render</p>
@@ -254,8 +247,7 @@ const WorkspacePage: React.FC = () => {
               Ready to Design?
             </h4>
             <p className="text-slate-400 text-sm">
-              Enter a prompt in the to start generating your custom
-              flyer with AI.
+              Enter a prompt to start generating your custom designs with AI.
             </p>
           </div>
         )}
