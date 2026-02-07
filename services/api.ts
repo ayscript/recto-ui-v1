@@ -33,7 +33,7 @@ export const api = {
 
   // Added Promise<any> to prevent restrictive union type inference in mock service
   async get(endpoint: string, params?: Record<string, string>): Promise<any> {
-    const url = new URL(`${API_URL}${endpoint}`);
+    const url = new URL(`${API_URL}/${endpoint}`);
     if (params) {
       Object.keys(params).forEach((key) =>
         url.searchParams.append(key, params[key]),
