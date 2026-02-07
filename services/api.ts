@@ -1,6 +1,6 @@
 import { AUTH_TOKEN_KEY, API_BASE_URL } from "../constants";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || "https://recto-backend.onrender.com";
 const auth_token = localStorage.getItem("recto_auth_token")
 
 const getHeaders = () => {
@@ -14,7 +14,7 @@ const getHeaders = () => {
 export const api = {
   async post(endpoint: string, data: any): Promise<any> {
     try {
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const res = await fetch(`${API_URL}/${endpoint}`, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify(data),
