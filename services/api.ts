@@ -1,6 +1,6 @@
 import { AUTH_TOKEN_KEY, API_BASE_URL } from "../constants";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://recto-backend.onrender.com";
+const API_URL = "https://recto-backend.onrender.com";
 const auth_token = localStorage.getItem("recto_auth_token")
 
 const getHeaders = () => {
