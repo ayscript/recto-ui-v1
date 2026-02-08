@@ -5,7 +5,7 @@ import DesignCanvass from "../components/HTMLDesign";
 import CanvasDownloader from "../components/DownloadButton";
 import ChatMessages from "../components/ChatMessages";
 import { Message } from "../components/ChatMessages";
-// import { useDashboardStore } from "../../store/dashboardStore";
+import { useDashboardStore } from "../../store/dashboardStore";
 
 export const cleanResponse = (text: string) => {
   if (!text) return "";
@@ -22,7 +22,7 @@ const WorkspacePage: React.FC = () => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const navigate = useNavigate();
-  // const { designs, setDesigns } = useDashboardStore();
+  const { designs, setDesigns } = useDashboardStore();
 
   // Fetch conversation history when component mounts with an id
   useEffect(() => {
@@ -88,8 +88,6 @@ const WorkspacePage: React.FC = () => {
         message: prompt,
       });
 
-      // console.log("Raw AI Response:", responseData?.response);
-
       const aiMessage = cleanResponse(responseData?.response);
       console.log("Cleaned AI Message:", aiMessage);
       setDesignCode(JSON.parse(aiMessage).canvas);
@@ -109,6 +107,7 @@ const WorkspacePage: React.FC = () => {
     }
 
     if (!id) {
+      setDesigns([...designs, { session_id, preview: prompt }]);
       navigate(`/dashboard/workspace/${session_id}`);
     }
   };
