@@ -1,30 +1,41 @@
-import React, { JSX } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext'; // Import your new context
+import React, { JSX } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext"; // Import your new context
 
 // Pages
-import LoginPage from './pages/Login';
-import SignupPage from './pages/Signup';
-import ForgotPasswordPage from './pages/ForgotPassword';
-import DashboardPage from './pages/Dashboard';
-import WorkspacePage from './pages/Workspace';
-import GalleryPage from './pages/Gallery';
-import CommunityPage from './pages/Community';
-import ProfilePage from './pages/Profile';
+import LoginPage from "./pages/Login";
+import SignupPage from "./pages/Signup";
+import ForgotPasswordPage from "./pages/ForgotPassword";
+import DashboardPage from "./pages/Dashboard";
+import WorkspacePage from "./pages/Workspace";
+import GalleryPage from "./pages/Gallery";
+import CommunityPage from "./pages/Community";
+import ProfilePage from "./pages/Profile";
 
 // Layout
-import Layout from './components/Layout';
-import RectoLandingPage from './pages/Landingpage';
+import Layout from "./components/Layout";
+import RectoLandingPage from "./pages/Landingpage";
 
 // --- Helper Components for Routing ---
 
 // 1. Protects routes like Dashboard (Redirects to Login if not auth)
 const ProtectedRoute = () => {
   const { user, loading } = useAuth();
-  
-  if (loading) return <div className="h-screen w-full flex items-center justify-center">Loading...</div>;
+
+  if (loading)
+    return (
+      <div className="h-screen w-full flex items-center justify-center">
+        Loading...
+      </div>
+    );
   if (!user) return <Navigate to="/login" replace />;
-  
+
   return <Outlet />; // Renders the child route (Layout)
 };
 
@@ -34,7 +45,7 @@ const PublicOnlyRoute = ({ children }: { children: JSX.Element }) => {
 
   if (loading) return null; // Or a spinner
   if (user) return <Navigate to="/dashboard" replace />;
-  
+
   return children;
 };
 
@@ -52,24 +63,25 @@ const App: React.FC = () => {
           <Route path="/" element={<RectoLandingPage />} />
 
           {/* Public Only Routes: Login/Signup (Redirect to Dashboard if logged in) */}
-          <Route 
-            path="/login" 
+          <Route
+            path="/login"
             element={
               <PublicOnlyRoute>
                 {/* Remove onLogin prop, LoginPage should use useAuth() or supabase directly */}
-                <LoginPage /> 
+                <LoginPage />
               </PublicOnlyRoute>
-            } 
+            }
           />
-          <Route 
-            path="/signup" 
+          <Route
+            path="/signup"
             element={
               <PublicOnlyRoute>
                 <SignupPage />
               </PublicOnlyRoute>
-            } 
+            }
           />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
 
           {/* Protected Routes: Dashboard */}
           <Route element={<ProtectedRoute />}>
@@ -83,7 +95,6 @@ const App: React.FC = () => {
               <Route path="profile" element={<ProfilePage />} />
             </Route>
           </Route>
-
         </Routes>
       </BrowserRouter>
     </AuthProvider>
