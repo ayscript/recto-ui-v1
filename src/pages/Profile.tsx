@@ -1,14 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
+import { useAuth } from '../context/AuthContext';
 
-interface ProfilePageProps {
-  onLogout: () => void;
-}
-
-const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
+const ProfilePage: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { signOut } = useAuth();
 
   useEffect(() => {
     api.get('get_profile').then(res => {
@@ -79,7 +77,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onLogout }) => {
           <p className="text-red-600/70 text-sm mb-6">Once you sign out or delete your account, your active session will be terminated.</p>
           <div className="flex space-x-4">
             <button 
-              onClick={onLogout}
+              onClick={signOut}
               className="px-6 py-2 bg-white border border-red-200 text-red-600 font-bold rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm"
             >
               Sign out of Recto

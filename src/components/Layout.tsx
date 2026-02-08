@@ -1,19 +1,14 @@
 import React from "react";
 import {
-  Link,
   NavLink,
   Outlet,
   useLocation,
-  useNavigate,
 } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 
-interface LayoutProps {
-  onLogout: () => void;
-}
-
-const Layout: React.FC<LayoutProps> = ({ onLogout }) => {
+const Layout: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   const navItems = [
     {
@@ -88,7 +83,7 @@ const Layout: React.FC<LayoutProps> = ({ onLogout }) => {
           </div>
           <div className="flex shrink-0 p-4 border-t border-slate-800">
             <button
-              onClick={onLogout}
+              onClick={signOut}
               className="flex items-center w-full px-4 py-3 text-sm font-medium text-slate-400 rounded-xl hover:bg-red-500/10 hover:text-red-400 transition-colors"
             >
               <svg
