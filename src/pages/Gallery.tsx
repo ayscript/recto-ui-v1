@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useDashboardStore } from "../../store/dashboardStore";
 
 const GalleryPage: React.FC = () => {
-  const [designs, setDesigns] = useState<any[]>([]);
+  // const [designs] = useState<any[]>([]);
+
+  const { designs, setDesigns } = useDashboardStore();
 
   useEffect(() => {
     // api.get("get_all_images").then(setDesigns);
@@ -17,7 +20,9 @@ const GalleryPage: React.FC = () => {
       }
     }
 
-    fetchDesigns()
+    if(designs.length === 0){
+      fetchDesigns();
+    }
   }, []);
 
   return (
