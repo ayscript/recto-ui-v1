@@ -20,6 +20,8 @@ const WorkspacePage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
+  const navigate = useNavigate();
+
   // Fetch conversation history when component mounts with an id
   useEffect(() => {
     if (id) {
@@ -28,6 +30,11 @@ const WorkspacePage: React.FC = () => {
         try {
           const response = await api.get(`history/${id}`);
           if (response?.conversation) {
+            if (response.conversation.length === 0) {
+              navigate('/dashboard/workspace');
+              return;
+            }
+            
             setMessages(response.conversation);
           }
         } catch (error) {
@@ -48,14 +55,12 @@ const WorkspacePage: React.FC = () => {
       // console.log(messages[messages.length - 1]);
       setDesignCode(JSON.parse(cleanResponse(messages[messages.length - 1]?.content))?.canvas || null);
     } catch (e) {
-      console.log("");
+      
     }
     // setDesignCode(JSON.parse(cleanResponse(messages[messages.length - 1]?.content))?.canvas || null);
   }, [messages])
 
   const iframeRef = useRef(null);
-
-  const navigate = useNavigate();
 
   const handleGenerate = async (e?: React.SyntheticEvent) => {
     if (e) e.preventDefault();
