@@ -13,6 +13,30 @@ const getHeaders = () => {
 
 export const api = {
   async post(endpoint: string, data: any): Promise<any> {
+    // Allow requests to signup endpoint without an active session
+    if (endpoint.includes("signup")) {
+      try {
+        const res = await fetch(`${API_URL}/${endpoint}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const payload = await res.json();
+        console.log("API Response:", payload);
+
+        if (!res.ok) {
+          throw new Error("API request failed");
+        }
+
+        return payload;
+      } catch (error) {
+        return error;
+      }
+    }
+
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -38,7 +62,6 @@ export const api = {
         throw new Error("API request failed");
       }
 
-      // return { status: 'success' };
       return payload;
     } catch (error) {
       return error;
