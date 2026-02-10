@@ -1,21 +1,33 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeClosed } from 'lucide-react';
 import { api } from '../../services/api';
 
 const SignupPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({ display_name: '', email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState({ display_name: '', email: '', password: '', confirmPassword: '' });
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    
     setLoading(true);
     try {
-      const res = await api.post('signup', formData);
+      const res = await api.post('signup', { display_name: formData.display_name, email: formData.email, password: formData.password });
       navigate('/login');
     } catch (err) {
       console.error(err);
+      setError('Failed to create account. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -30,6 +42,11 @@ const SignupPage: React.FC = () => {
         </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-2xl">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
@@ -57,14 +74,54 @@ const SignupPage: React.FC = () => {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
-              <input
-                type="password"
-                required
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  className="w-full pr-12 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowPassword((s) => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  {showPassword ? (
+                    <Eye className="w-4 h-4" />
+                  ) : (
+                    <EyeClosed className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  className="w-full pr-12 px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                />
+                <button
+                  type="button"
+                  aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  onClick={() => setShowConfirmPassword((s) => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  {showConfirmPassword ? (
+                    <Eye className="w-4 h-4" />
+                  ) : (
+                    <EyeClosed className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <button
